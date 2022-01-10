@@ -1,0 +1,17 @@
+{
+    "fa": "Farsi",
+    "en": "English",
+    "Announcements": "Announcements",
+    "dashboard.index": "Dashboard",
+    "dashboard.profile": "Profile",
+    "dashboard.statistics.index": "Statistics List",
+    "dashboard.statistics.show": "Statistics Show",
+    "dashboard.logs.index": "Logs List",
+    "dashboard.logs.show": "Logs Show",
+    "dashboard.roles.index": "Roles List",
+    "dashboard.roles.create": "Roles Create",
+    "dashboard.roles.edit": "Roles Edit",
+    "dashboard.users.index": "Users List",
+    "dashboard.users.create": "Users Create",
+    "dashboard.users.edit": "Users Edit"
+}
