@@ -26,9 +26,7 @@ Route::prefix('auth')->name('auth.')->group(function () {
 });
 
 Route::prefix('dashboard')->name('dashboard.')->group(function () {
-
     //
-
 });
 
 
