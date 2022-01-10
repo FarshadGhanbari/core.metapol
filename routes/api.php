@@ -35,11 +35,12 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['auth:api'])->group(
     Route::post('filemanager', [FilemanagerController::class, 'index']);
     Route::post('filemanager-folder', [FilemanagerController::class, 'folder']);
     Route::post('filemanager-folder-create', [FilemanagerController::class, 'folderCreate']);
-    Route::post('filemanager-folder-delete', [FilemanagerController::class, 'folderDelete']);
+    Route::delete('filemanager-folder-delete', [FilemanagerController::class, 'folderDelete']);
     Route::post('filemanager-file-upload/{folder_id}', [FilemanagerController::class, 'fileUpload']);
-    Route::post('filemanager-file-delete', [FilemanagerController::class, 'fileDelete']);
+    Route::delete('filemanager-file-delete', [FilemanagerController::class, 'fileDelete']);
 
-    Route::post('users', [UserController::class, 'index']);
+    Route::post('user-list', [UserController::class, 'index']);
+    Route::delete('user-delete', [UserController::class, 'delete']);
 
     Route::get('/statistics', function (Request $request) {
         return response()->json(\App\Models\Shared\Statistic::search($request->search)->select('ip', 'geo', 'device_type', 'platform', 'browser', 'created_at', 'updated_at')->latest()->paginate($request->perPage));
