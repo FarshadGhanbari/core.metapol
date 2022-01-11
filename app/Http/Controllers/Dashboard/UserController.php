@@ -28,4 +28,14 @@ class UserController extends Controller
             return response()->json(['error' => $exception->getMessage()], $exception->getCode());
         }
     }
+
+    public function selectedDelete()
+    {
+        try {
+            User::whereIn('id', request('selected'))->whereNotIn('id', [1, auth()->id()])->delete();
+            return response()->json(null, 201);
+        } catch (\Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], $exception->getCode());
+        }
+    }
 }

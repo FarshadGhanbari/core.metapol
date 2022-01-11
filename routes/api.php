@@ -41,6 +41,7 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['auth:api'])->group(
 
     Route::post('user-list', [UserController::class, 'index']);
     Route::delete('user-delete', [UserController::class, 'delete']);
+    Route::delete('user-selected-delete', [UserController::class, 'selectedDelete']);
 
     Route::get('/statistics', function (Request $request) {
         return response()->json(\App\Models\Shared\Statistic::search($request->search)->select('ip', 'geo', 'device_type', 'platform', 'browser', 'created_at', 'updated_at')->latest()->paginate($request->perPage));
