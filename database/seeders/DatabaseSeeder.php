@@ -15,9 +15,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $roles = [
-            ['name' => 'developer', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'admin', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'user','created_at' => now(), 'updated_at' => now()],
+            ['status' => 'active', 'name' => 'developer', 'created_at' => now(), 'updated_at' => now()],
+            ['status' => 'active', 'name' => 'admin', 'created_at' => now(), 'updated_at' => now()],
+            ['status' => 'active', 'name' => 'user','created_at' => now(), 'updated_at' => now()],
+            ['status' => 'active', 'name' => 'business','created_at' => now(), 'updated_at' => now()],
         ];
         $countries = [
             ['name' => 'Iran', 'slug' => 'iran', 'status' => 'active', 'created_at' => now(), 'updated_at' => now()],
@@ -1179,11 +1180,13 @@ class DatabaseSeeder extends Seeder
         $users = [
             ['role_id' => 1, 'status' => 'active', 'first_name' => 'Farshad', 'last_name' => 'Ghanbari', 'mobile' => '09196481968', 'email' => 'eng.ghanbari2025@gmail.com', 'password' => Hash::make('password'), 'created_at' => now(), 'updated_at' => now()],
         ];
+        $filemanagerSrc = '/storage/filemanagers/' . makeHash(now() . 1);
+        $filemanagerFolderSrc = $filemanagerSrc . '/' . makeHash('public');
         $filemanagers = [
-            ['user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['user_id' => 1, 'src' => $filemanagerSrc, 'created_at' => now(), 'updated_at' => now()],
         ];
         $filemanagerFolders = [
-            ['filemanager_id' => 1, 'user_id' => 1, 'name' => 'public', 'created_at' => now(), 'updated_at' => now()],
+            ['filemanager_id' => 1, 'user_id' => 1, 'src' => $filemanagerFolderSrc, 'name' => 'public', 'created_at' => now(), 'updated_at' => now()],
         ];
         \App\Models\Shared\Role::insert($roles);
         \App\Models\Shared\Country::insert($countries);

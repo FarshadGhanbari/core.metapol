@@ -14,12 +14,11 @@ class Role extends Model
 
     protected $fillable = [
         'name',
-        'department',
+        'status',
     ];
 
     public $searchable = [
         'name',
-        'department',
     ];
 
     public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -37,12 +36,6 @@ class Role extends Model
         if (in_array($this->id, [1, 2])) return __('All permissions');
         if ($this->id == 3) return __('Default');
         return implode(', ', $this->permissions->pluck('name')->toArray());
-    }
-
-    public function departmentBadge(): string
-    {
-        $background = $this->department == 'not' ? 'bg-white dark:bg-trueGray-800 text-coolGray-500 dark:text-trueGray-500 border border-coolGray-200 dark:border-trueGray-900' : 'bg-emerald-500';
-        return '<span class="transition-all py-1 px-3 inline-flex text-xs rounded-full ' . $background . ' text-white">' . __(ucfirst($this->department)) . '</span>';
     }
 
     public static function boot()

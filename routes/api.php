@@ -1,10 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Dashboard\FilemanagerController;
-use App\Http\Controllers\Dashboard\UserController;
+use App\Http\Controllers\Dashboard\EssentialsController;
+use App\Http\Controllers\Dashboard\FilemanagersController;
+use App\Http\Controllers\Dashboard\RolesController;
+use App\Http\Controllers\Dashboard\UsersController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,20 +32,36 @@ Route::prefix('dashboard')->name('dashboard.')->group(function () {
 
 
 Route::prefix('dashboard')->name('dashboard.')->middleware(['auth:api'])->group(function () {
-
-    Route::post('filemanager', [FilemanagerController::class, 'index']);
-    Route::post('filemanager-folder', [FilemanagerController::class, 'folder']);
-    Route::post('filemanager-folder-create', [FilemanagerController::class, 'folderCreate']);
-    Route::delete('filemanager-folder-delete', [FilemanagerController::class, 'folderDelete']);
-    Route::post('filemanager-file-upload/{folder_id}', [FilemanagerController::class, 'fileUpload']);
-    Route::delete('filemanager-file-delete', [FilemanagerController::class, 'fileDelete']);
-
-    Route::post('user-list', [UserController::class, 'index']);
-    Route::delete('user-delete', [UserController::class, 'delete']);
-    Route::delete('user-selected-delete', [UserController::class, 'selectedDelete']);
-
-    Route::get('/statistics', function (Request $request) {
-        return response()->json(\App\Models\Shared\Statistic::search($request->search)->select('ip', 'geo', 'device_type', 'platform', 'browser', 'created_at', 'updated_at')->latest()->paginate($request->perPage));
-    });
-
+    // Essentials API
+    Route::post('essentials-roles-list', [EssentialsController::class, 'rolesList']);
+    Route::post('essentials-permissions-list', [EssentialsController::class, 'permissionsList']);
+    // Filemanagers API
+    Route::post('filemanagers', [FilemanagersController::class, 'index']);
+    Route::post('filemanagers-folder', [FilemanagersController::class, 'folder']);
+    Route::post('filemanagers-folder-create', [FilemanagersController::class, 'folderCreate']);
+    Route::delete('filemanagers-folder-delete', [FilemanagersController::class, 'folderDelete']);
+    Route::post('filemanagers-file-upload/{folder_id}', [FilemanagersController::class, 'fileUpload']);
+    Route::delete('filemanagers-file-delete', [FilemanagersController::class, 'fileDelete']);
+    // Roles API
+    Route::post('roles-list', [RolesController::class, 'index']);
+    Route::put('roles-store', [RolesController::class, 'store']);
+    Route::post('roles-edit', [RolesController::class, 'edit']);
+    Route::patch('roles-update', [RolesController::class, 'update']);
+    Route::delete('roles-delete', [RolesController::class, 'delete']);
+    Route::patch('roles-enable', [RolesController::class, 'enable']);
+    Route::patch('roles-disable', [RolesController::class, 'disable']);
+    Route::delete('roles-selected-delete', [RolesController::class, 'selectedDelete']);
+    Route::delete('roles-selected-enable', [RolesController::class, 'selectedEnable']);
+    Route::delete('roles-selected-disable', [RolesController::class, 'selectedDisable']);
+    // Users API
+    Route::post('users-list', [UsersController::class, 'index']);
+    Route::put('users-store', [UsersController::class, 'store']);
+    Route::post('users-edit', [UsersController::class, 'edit']);
+    Route::patch('users-update', [UsersController::class, 'update']);
+    Route::delete('users-delete', [UsersController::class, 'delete']);
+    Route::patch('users-enable', [UsersController::class, 'enable']);
+    Route::patch('users-disable', [UsersController::class, 'disable']);
+    Route::delete('users-selected-delete', [UsersController::class, 'selectedDelete']);
+    Route::delete('users-selected-enable', [UsersController::class, 'selectedEnable']);
+    Route::delete('users-selected-disable', [UsersController::class, 'selectedDisable']);
 });

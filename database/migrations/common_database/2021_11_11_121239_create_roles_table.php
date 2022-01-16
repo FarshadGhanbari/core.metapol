@@ -15,8 +15,8 @@ class CreateRolesTable extends Migration
     {
         Schema::connection('common_database')->create('roles', function (Blueprint $table) {
             $table->id();
+            $table->enum('status', ['disable', 'active'])->default('disable');
             $table->string('name')->unique();
-            $table->enum('department', ['is', 'not'])->default('not');
             $table->timestamps();
         });
         Schema::connection('common_database')->create('permissions', function (Blueprint $table) {

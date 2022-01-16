@@ -8,6 +8,7 @@ use App\Utilis\Traits\Model\SubmitLogger;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -122,19 +123,7 @@ class User extends Authenticatable implements JWTSubject
         return ($this->role->name == 'developer' or $this->role->name == 'admin');
     }
 
-    public function allPermissionsBadge(): string
-    {
-        if ($this->additions['permissions'] and is_array($this->additions['permissions'])) return implode(' - ', $this->additions['permissions']);
-        return '-';
-    }
-
-    public function statusBadge(): string
-    {
-        $background = $this->status == 'disable' ? 'bg-rose-500' : 'bg-emerald-500';
-        return '<span class="transition-all py-1 px-3 inline-flex text-xs rounded-full ' . $background . ' text-white">' . __(ucfirst($this->status)) . '</span>';
-    }
-
-    public function initById()
+    public function initDefaultData()
     {
         $filemanagerSrc = '/storage/filemanagers/' . makeHash(now() . $this->id);
         $filemanagerFolderSrc = $filemanagerSrc . '/' . makeHash('public');
@@ -165,6 +154,17 @@ class User extends Authenticatable implements JWTSubject
             $row->logs()->delete();
             $row->filemanager()->delete();
             $row->statistics()->update(['user_id' => null]);
+        });
+        static::creating(function ($row) {
+            $row->password = Hash::make($row->password);
+        });
+        static::updating(function ($row) {
+            if (!empty($row->password)) {
+                $row->password = Hash::make($row->password);
+            }
+        });
+        static::created(function ($row) {
+            $row->initDefaultData();
         });
     }
 }
