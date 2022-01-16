@@ -26,11 +26,6 @@ Route::prefix('auth')->name('auth.')->group(function () {
     Route::get('user', [AuthController::class, 'user'])->middleware('auth:api');
 });
 
-Route::prefix('dashboard')->name('dashboard.')->group(function () {
-    //
-});
-
-
 Route::prefix('dashboard')->name('dashboard.')->middleware(['auth:api'])->group(function () {
     // Essentials API
     Route::post('essentials-roles-list', [EssentialsController::class, 'rolesList']);

@@ -10,9 +10,10 @@ class Permission
 {
     public function handle($request, Closure $next, $permission)
     {
-        if (!Auth::check()) return redirect('login');
+        if (!Auth::check()) return response()->json(['message' => 'Sorry, you are not authorized to access this route.'], 401);
         $user = Auth::user();
-        if ($user->isAdmin() or in_array($permission, $user->allPermissions())) return $next($request);
-        return abort(403);
+        if ($user->isAdministrator()) return $next($request);
+        if ($user->status == 'active' and in_array($permission, $user->allPermissions())) return $next($request);
+        return response()->json(['message' => 'Sorry, you are forbidden from accessing this route.'], 403);
     }
 }

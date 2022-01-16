@@ -1,0 +1,148 @@
+<?php
+
+namespace App\Http\Controllers\Dashboard;
+
+use App\Http\Controllers\Controller;
+use App\Models\Shared\User;
+use Laravel\Fortify\Rules\Password;
+
+class UsersController extends Controller
+{
+    public function index()
+    {
+        try {
+            $rows = User::where('role_id', 3);
+            if (request('status') and !empty(request('status'))) {
+                $rows = $rows->whereIn('status', request('status'));
+            }
+            if (request('dateRange') and !empty(request('dateRange'))) {
+                $rows = $rows->whereBetween('created_at', request('dateRange'));
+            }
+            $rows = $rows->search(request('search'))->paginate(request('perPage'));
+            return response()->json($rows);
+        } catch (\Exception $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+    }
+
+    public function store()
+    {
+        $validate = request()->validate([
+            'role_id' => ['required'],
+            'first_name' => ['required', 'max:191'],
+            'last_name' => ['required', 'max:191'],
+            'mobile' => ['required', 'string', 'max:11', 'unique:common_database.users,mobile'],
+            'email' => ['max:191', 'unique:common_database.users,email'],
+            'status' => ['required'],
+            'password' => ['required', 'string', new Password, 'confirmed']
+        ]);
+        if (!$validate) {
+            return response()->json($validate, 422);
+        }
+        try {
+            User::create(request()->all());
+            return response()->json(null, 201);
+        } catch (\Exception $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+    }
+
+    public function edit()
+    {
+        try {
+            $row = User::findOrFail(request('id'));
+            return response()->json($row, 201);
+        } catch (\Exception $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+    }
+
+    public function update()
+    {
+        $row = User::findOrFail(request('id'));
+        $validate = request()->validate([
+            'role_id' => ['required'],
+            'first_name' => ['required', 'max:191'],
+            'last_name' => ['required', 'max:191'],
+            'mobile' => ['required', 'string', 'max:11', 'unique:common_database.users,mobile,' . $row->id],
+            'email' => ['max:191', 'unique:common_database.users,email,' . $row->id],
+            'status' => ['required'],
+            'password' => [new Password, 'confirmed']
+        ]);
+        if (!$validate) {
+            return response()->json($validate, 422);
+        }
+        try {
+            $row->update(request()->all());
+            return response()->json(null, 201);
+        } catch (\Exception $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+    }
+
+    public function delete()
+    {
+        try {
+            $row = User::findOrFail(request('id'));
+            if (request('id') == 1 or $row->id == auth()->id()) return response()->json(['message' => 'This operation is not possible'], 403);
+            $row->delete();
+            return response()->json(null, 201);
+        } catch (\Exception $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+    }
+
+    public function enable()
+    {
+        try {
+            $row = User::findOrFail(request('id'));
+            if (request('id') == 1 or $row->id == auth()->id()) return response()->json(['message' => 'This operation is not possible'], 403);
+            $row->update(['status' => 'active']);
+            return response()->json(null, 201);
+        } catch (\Exception $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+    }
+
+    public function disable()
+    {
+        try {
+            $row = User::findOrFail(request('id'));
+            if (request('id') == 1 or $row->id == auth()->id()) return response()->json(['message' => 'This operation is not possible'], 403);
+            $row->update(['status' => 'disable']);
+            return response()->json(null, 201);
+        } catch (\Exception $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+    }
+
+    public function selectedDelete()
+    {
+        try {
+            User::whereIn('id', request('selected'))->whereNotIn('id', [1, auth()->id()])->delete();
+            return response()->json(null, 201);
+        } catch (\Exception $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+    }
+
+    public function selectedEnable()
+    {
+        try {
+            User::whereIn('id', request('selected'))->whereNotIn('id', [1, auth()->id()])->update(['status' => 'active']);
+            return response()->json(null, 201);
+        } catch (\Exception $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+    }
+
+    public function selectedDisable()
+    {
+        try {
+            User::whereIn('id', request('selected'))->whereNotIn('id', [1, auth()->id()])->update(['status' => 'disable']);
+            return response()->json(null, 201);
+        } catch (\Exception $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+    }
+}
