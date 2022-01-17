@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\Shared\Role;
+use App\Models\Shared\City;
 
-class RolesController extends Controller
+class CitiesController extends Controller
 {
     public function index()
     {
         try {
-            $rows = Role::whereNotIn('id', [1, 2]);
+            $rows = City::query();
             if (request('status') and !empty(request('status'))) {
                 $rows = $rows->whereIn('status', request('status'));
             }
@@ -30,6 +30,7 @@ class RolesController extends Controller
     public function store()
     {
         $validate = request()->validate([
+            'province_id' => ['required'],
             'name' => ['required', 'max:191'],
             'status' => ['required']
         ]);
@@ -37,8 +38,7 @@ class RolesController extends Controller
             return response()->json($validate, 422);
         }
         try {
-            $row = Role::create(request()->except('permissions'));
-            $row->permissions()->sync(request('permissions'));
+            City::create(request()->all());
             return response()->json(null, 201);
         } catch (\Exception $exception) {
             return response()->json(['message' => $exception->getMessage()], 422);
@@ -48,8 +48,7 @@ class RolesController extends Controller
     public function edit()
     {
         try {
-            if (in_array(request('id'), [1, 2, 3, 4])) return response()->json(['message' => 'This operation is not possible'], 403);
-            $row = Role::with('permissions')->findOrFail(request('id'));
+            $row = City::findOrFail(request('id'));
             return response()->json($row, 201);
         } catch (\Exception $exception) {
             return response()->json(['message' => $exception->getMessage()], 422);
@@ -58,9 +57,9 @@ class RolesController extends Controller
 
     public function update()
     {
-        if (in_array(request('id'), [1, 2, 3, 4])) return response()->json(['message' => 'This operation is not possible'], 403);
-        $row = Role::findOrFail(request('id'));
+        $row = City::findOrFail(request('id'));
         $validate = request()->validate([
+            'province_id' => ['required'],
             'name' => ['required', 'max:191'],
             'status' => ['required']
         ]);
@@ -68,8 +67,7 @@ class RolesController extends Controller
             return response()->json($validate, 422);
         }
         try {
-            $row->update(request()->except('permissions'));
-            $row->permissions()->sync(request('permissions'));
+            $row->update(request()->all());
             return response()->json(null, 201);
         } catch (\Exception $exception) {
             return response()->json(['message' => $exception->getMessage()], 422);
@@ -79,8 +77,7 @@ class RolesController extends Controller
     public function delete()
     {
         try {
-            if (in_array(request('id'), [1, 2, 3, 4])) return response()->json(['message' => 'This operation is not possible'], 403);
-            $row = Role::findOrFail(request('id'));
+            $row = City::findOrFail(request('id'));
             $row->delete();
             return response()->json(null, 201);
         } catch (\Exception $exception) {
@@ -91,8 +88,7 @@ class RolesController extends Controller
     public function enable()
     {
         try {
-            if (in_array(request('id'), [1, 2])) return response()->json(['message' => 'This operation is not possible'], 403);
-            $row = Role::findOrFail(request('id'));
+            $row = City::findOrFail(request('id'));
             $row->update(['status' => 'active']);
             return response()->json(null, 201);
         } catch (\Exception $exception) {
@@ -103,8 +99,7 @@ class RolesController extends Controller
     public function disable()
     {
         try {
-            if (in_array(request('id'), [1, 2])) return response()->json(['message' => 'This operation is not possible'], 403);
-            $row = Role::findOrFail(request('id'));
+            $row = City::findOrFail(request('id'));
             $row->update(['status' => 'disable']);
             return response()->json(null, 201);
         } catch (\Exception $exception) {
@@ -115,7 +110,7 @@ class RolesController extends Controller
     public function selectedDelete()
     {
         try {
-            Role::whereIn('id', request('selected'))->whereNotIn('id', [1, 2, 3, 4])->delete();
+            City::whereIn('id', request('selected'))->delete();
             return response()->json(null, 201);
         } catch (\Exception $exception) {
             return response()->json(['message' => $exception->getMessage()], 422);
@@ -125,7 +120,7 @@ class RolesController extends Controller
     public function selectedEnable()
     {
         try {
-            Role::whereIn('id', request('selected'))->whereNotIn('id', [1, 2])->update(['status' => 'active']);
+            City::whereIn('id', request('selected'))->update(['status' => 'active']);
             return response()->json(null, 201);
         } catch (\Exception $exception) {
             return response()->json(['message' => $exception->getMessage()], 422);
@@ -135,7 +130,7 @@ class RolesController extends Controller
     public function selectedDisable()
     {
         try {
-            Role::whereIn('id', request('selected'))->whereNotIn('id', [1, 2])->update(['status' => 'disable']);
+            City::whereIn('id', request('selected'))->update(['status' => 'disable']);
             return response()->json(null, 201);
         } catch (\Exception $exception) {
             return response()->json(['message' => $exception->getMessage()], 422);

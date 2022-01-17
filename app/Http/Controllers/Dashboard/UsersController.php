@@ -53,6 +53,7 @@ class UsersController extends Controller
     public function edit()
     {
         try {
+            if (request('id') == 1 or request('id') == auth()->id()) return response()->json(['message' => 'This operation is not possible'], 403);
             $row = User::findOrFail(request('id'));
             return response()->json($row, 201);
         } catch (\Exception $exception) {
@@ -62,6 +63,7 @@ class UsersController extends Controller
 
     public function update()
     {
+        if (request('id') == 1 or request('id') == auth()->id()) return response()->json(['message' => 'This operation is not possible'], 403);
         $row = User::findOrFail(request('id'));
         $validate = request()->validate([
             'role_id' => ['required'],
@@ -86,8 +88,8 @@ class UsersController extends Controller
     public function delete()
     {
         try {
+            if (request('id') == 1 or request('id') == auth()->id()) return response()->json(['message' => 'This operation is not possible'], 403);
             $row = User::findOrFail(request('id'));
-            if (request('id') == 1 or $row->id == auth()->id()) return response()->json(['message' => 'This operation is not possible'], 403);
             $row->delete();
             return response()->json(null, 201);
         } catch (\Exception $exception) {
@@ -98,8 +100,8 @@ class UsersController extends Controller
     public function enable()
     {
         try {
+            if (request('id') == 1 or request('id') == auth()->id()) return response()->json(['message' => 'This operation is not possible'], 403);
             $row = User::findOrFail(request('id'));
-            if (request('id') == 1 or $row->id == auth()->id()) return response()->json(['message' => 'This operation is not possible'], 403);
             $row->update(['status' => 'active']);
             return response()->json(null, 201);
         } catch (\Exception $exception) {
@@ -110,8 +112,8 @@ class UsersController extends Controller
     public function disable()
     {
         try {
+            if (request('id') == 1 or request('id') == auth()->id()) return response()->json(['message' => 'This operation is not possible'], 403);
             $row = User::findOrFail(request('id'));
-            if (request('id') == 1 or $row->id == auth()->id()) return response()->json(['message' => 'This operation is not possible'], 403);
             $row->update(['status' => 'disable']);
             return response()->json(null, 201);
         } catch (\Exception $exception) {

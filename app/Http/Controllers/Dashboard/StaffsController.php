@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\Shared\Role;
+use App\Models\Shared\User;
+use Laravel\Fortify\Rules\Password;
 
-class RolesController extends Controller
+class StaffsController extends Controller
 {
     public function index()
     {
         try {
-            $rows = Role::whereNotIn('id', [1, 2]);
+            $rows = User::whereNotIn('role_id', [1, 2, 3, 4]);
             if (request('status') and !empty(request('status'))) {
                 $rows = $rows->whereIn('status', request('status'));
             }
@@ -30,14 +31,19 @@ class RolesController extends Controller
     public function store()
     {
         $validate = request()->validate([
-            'name' => ['required', 'max:191'],
-            'status' => ['required']
+            'role_id' => ['required'],
+            'first_name' => ['required', 'max:191'],
+            'last_name' => ['required', 'max:191'],
+            'mobile' => ['required', 'string', 'max:11', 'unique:common_database.users,mobile'],
+            'email' => ['max:191', 'unique:common_database.users,email'],
+            'status' => ['required'],
+            'password' => ['required', 'string', new Password, 'confirmed']
         ]);
         if (!$validate) {
             return response()->json($validate, 422);
         }
         try {
-            $row = Role::create(request()->except('permissions'));
+            $row = User::create(request()->except('permissions'));
             $row->permissions()->sync(request('permissions'));
             return response()->json(null, 201);
         } catch (\Exception $exception) {
@@ -48,8 +54,8 @@ class RolesController extends Controller
     public function edit()
     {
         try {
-            if (in_array(request('id'), [1, 2, 3, 4])) return response()->json(['message' => 'This operation is not possible'], 403);
-            $row = Role::with('permissions')->findOrFail(request('id'));
+            if (request('id') == 1 or request('id') == auth()->id()) return response()->json(['message' => 'This operation is not possible'], 403);
+            $row = User::findOrFail(request('id'));
             return response()->json($row, 201);
         } catch (\Exception $exception) {
             return response()->json(['message' => $exception->getMessage()], 422);
@@ -58,11 +64,16 @@ class RolesController extends Controller
 
     public function update()
     {
-        if (in_array(request('id'), [1, 2, 3, 4])) return response()->json(['message' => 'This operation is not possible'], 403);
-        $row = Role::findOrFail(request('id'));
+        if (request('id') == 1 or request('id') == auth()->id()) return response()->json(['message' => 'This operation is not possible'], 403);
+        $row = User::findOrFail(request('id'));
         $validate = request()->validate([
-            'name' => ['required', 'max:191'],
-            'status' => ['required']
+            'role_id' => ['required'],
+            'first_name' => ['required', 'max:191'],
+            'last_name' => ['required', 'max:191'],
+            'mobile' => ['required', 'string', 'max:11', 'unique:common_database.users,mobile,' . $row->id],
+            'email' => ['max:191', 'unique:common_database.users,email,' . $row->id],
+            'status' => ['required'],
+            'password' => [new Password, 'confirmed']
         ]);
         if (!$validate) {
             return response()->json($validate, 422);
@@ -79,8 +90,8 @@ class RolesController extends Controller
     public function delete()
     {
         try {
-            if (in_array(request('id'), [1, 2, 3, 4])) return response()->json(['message' => 'This operation is not possible'], 403);
-            $row = Role::findOrFail(request('id'));
+            if (request('id') == 1 or request('id') == auth()->id()) return response()->json(['message' => 'This operation is not possible'], 403);
+            $row = User::findOrFail(request('id'));
             $row->delete();
             return response()->json(null, 201);
         } catch (\Exception $exception) {
@@ -91,8 +102,8 @@ class RolesController extends Controller
     public function enable()
     {
         try {
-            if (in_array(request('id'), [1, 2])) return response()->json(['message' => 'This operation is not possible'], 403);
-            $row = Role::findOrFail(request('id'));
+            if (request('id') == 1 or request('id') == auth()->id()) return response()->json(['message' => 'This operation is not possible'], 403);
+            $row = User::findOrFail(request('id'));
             $row->update(['status' => 'active']);
             return response()->json(null, 201);
         } catch (\Exception $exception) {
@@ -103,8 +114,8 @@ class RolesController extends Controller
     public function disable()
     {
         try {
-            if (in_array(request('id'), [1, 2])) return response()->json(['message' => 'This operation is not possible'], 403);
-            $row = Role::findOrFail(request('id'));
+            if (request('id') == 1 or request('id') == auth()->id()) return response()->json(['message' => 'This operation is not possible'], 403);
+            $row = User::findOrFail(request('id'));
             $row->update(['status' => 'disable']);
             return response()->json(null, 201);
         } catch (\Exception $exception) {
@@ -115,7 +126,7 @@ class RolesController extends Controller
     public function selectedDelete()
     {
         try {
-            Role::whereIn('id', request('selected'))->whereNotIn('id', [1, 2, 3, 4])->delete();
+            User::whereIn('id', request('selected'))->whereNotIn('id', [1, auth()->id()])->delete();
             return response()->json(null, 201);
         } catch (\Exception $exception) {
             return response()->json(['message' => $exception->getMessage()], 422);
@@ -125,7 +136,7 @@ class RolesController extends Controller
     public function selectedEnable()
     {
         try {
-            Role::whereIn('id', request('selected'))->whereNotIn('id', [1, 2])->update(['status' => 'active']);
+            User::whereIn('id', request('selected'))->whereNotIn('id', [1, auth()->id()])->update(['status' => 'active']);
             return response()->json(null, 201);
         } catch (\Exception $exception) {
             return response()->json(['message' => $exception->getMessage()], 422);
@@ -135,7 +146,7 @@ class RolesController extends Controller
     public function selectedDisable()
     {
         try {
-            Role::whereIn('id', request('selected'))->whereNotIn('id', [1, 2])->update(['status' => 'disable']);
+            User::whereIn('id', request('selected'))->whereNotIn('id', [1, auth()->id()])->update(['status' => 'disable']);
             return response()->json(null, 201);
         } catch (\Exception $exception) {
             return response()->json(['message' => $exception->getMessage()], 422);

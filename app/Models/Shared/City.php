@@ -14,6 +14,7 @@ class City extends Model
     use Eloquence, SubmitLogger, Sluggable;
 
     protected $searchableColumns = [
+        'province.name',
         'name',
     ];
 
@@ -23,6 +24,15 @@ class City extends Model
         'slug',
         'status',
     ];
+
+    protected $appends = [
+        'province_name',
+    ];
+
+    public function getProvinceNameAttribute()
+    {
+        return $this->province->name;
+    }
 
     public function province(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

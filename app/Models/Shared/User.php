@@ -17,6 +17,7 @@ class User extends Authenticatable implements JWTSubject
     use Eloquence, SubmitLogger, Notifiable;
 
     protected $searchableColumns = [
+        'role.name',
         'first_name',
         'last_name',
         'mobile',
