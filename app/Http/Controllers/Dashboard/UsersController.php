@@ -18,7 +18,10 @@ class UsersController extends Controller
             if (request('dateRange') and !empty(request('dateRange'))) {
                 $rows = $rows->whereBetween('created_at', request('dateRange'));
             }
-            $rows = $rows->search(request('search'))->paginate(request('perPage'));
+            if (request('search') and !empty(request('search'))) {
+                $rows = $rows->search(request('search'));
+            }
+            $rows = $rows->paginate(request('perPage'));
             return response()->json($rows);
         } catch (\Exception $exception) {
             return response()->json(['message' => $exception->getMessage()], 422);

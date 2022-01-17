@@ -15,8 +15,8 @@ class CreateStatisticsTable extends Migration
     {
         Schema::connection('common_database')->create('statistics', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->string('ip', 45)->nullable();
+            $table->foreignIdFor(\App\Models\Shared\User::class)->nullable();
+            $table->ipAddress('ip')->nullable();
             $table->json('geo');
             $table->string('referer_page')->nullable();
             $table->string('page');

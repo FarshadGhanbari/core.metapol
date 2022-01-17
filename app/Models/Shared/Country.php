@@ -2,26 +2,24 @@
 
 namespace App\Models\Shared;
 
-use App\Utilis\Traits\Model\Searchable;
 use App\Utilis\Traits\Model\Sluggable;
 use App\Utilis\Traits\Model\SubmitLogger;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Eloquence;
 
 class Country extends Model
 {
     protected $connection = 'common_database';
 
-    use SubmitLogger, Sluggable, Searchable;
+    use Eloquence, SubmitLogger, Sluggable;
 
-    protected $generateSlugFrom = 'name', $slugField = 'slug';
+    protected $searchableColumns = [
+        'name',
+    ];
 
     protected $fillable = [
         'name',
-        'status',
-    ];
-
-    public $searchable = [
-        'name',
+        'slug',
         'status',
     ];
 

@@ -2,12 +2,15 @@
 
 namespace App\Models\Shared;
 
+use App\Utilis\Traits\Model\SubmitLogger;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
 
 class FilemanagerFolder extends Model
 {
     protected $connection = 'common_database';
+
+    use SubmitLogger;
 
     protected $fillable = [
         'filemanager_id',

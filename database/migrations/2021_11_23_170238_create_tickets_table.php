@@ -15,8 +15,8 @@ class CreateTicketsTable extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('assign_id')->nullable('users')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignIdFor(\App\Models\Shared\User::class);
+            $table->foreignIdFor(\App\Models\Shared\User::class, 'assign_id');
             $table->string('subject');
             $table->timestamps();
         });

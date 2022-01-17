@@ -15,7 +15,7 @@ class CreateLoginCodesTable extends Migration
     {
         Schema::connection('common_database')->create('login_codes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignIdFor(\App\Models\Shared\User::class);
             $table->string('code', 6);
             $table->timestamp('expiration_at');
             $table->timestamps();

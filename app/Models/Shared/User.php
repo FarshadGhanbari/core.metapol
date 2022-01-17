@@ -2,32 +2,26 @@
 
 namespace App\Models\Shared;
 
-use App\Utilis\Traits\Model\DateSwitcher;
-use App\Utilis\Traits\Model\Searchable;
 use App\Utilis\Traits\Model\SubmitLogger;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
+use Sofa\Eloquence\Eloquence;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
     protected $connection = 'common_database';
 
-    //use SubmitLogger;
+    use Eloquence, SubmitLogger, Notifiable;
 
-    use Notifiable, DateSwitcher, Searchable;
-
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
-
-    public function getJWTCustomClaims()
-    {
-        return [];
-    }
+    protected $searchableColumns = [
+        'first_name',
+        'last_name',
+        'mobile',
+        'email',
+    ];
 
     protected $fillable = [
         'role_id',
@@ -37,14 +31,6 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'status',
-        'additions',
-    ];
-
-    protected $searchable = [
-        'first_name',
-        'last_name',
-        'mobile',
-        'email',
         'additions',
     ];
 
@@ -62,6 +48,16 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'role_name',
     ];
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 
     public function getNameAttribute()
     {

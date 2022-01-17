@@ -29,19 +29,6 @@ if (!function_exists('sluggable')) {
     }
 }
 
-if (!function_exists('routeName')) {
-    function routeName($name): string
-    {
-        try {
-            $name = explode('.', str_replace('index', 'list', $name));
-            unset($name[0]);
-            return implode(' ', $name);
-        } catch (Exception $exception) {
-            return $exception->getMessage();
-        }
-    }
-}
-
 if (!function_exists('clearCache')) {
     function clearCache()
     {
@@ -55,9 +42,9 @@ if (!function_exists('clearCache')) {
             file_put_contents(storage_path('logs/laravel.log'), '');
             file_put_contents(storage_path('logs/cron_jobs.log'), '');
             exec('composer dump-autoload');
-            return 'Cleared..!';
+            return response()->json(['Cleared..!'], 201);
         } catch (Exception $exception) {
-            return $exception->getMessage();
+            return response()->json(['message' => $exception->getMessage()], 422);
         }
     }
 }
@@ -83,16 +70,6 @@ if (!function_exists('checkMobileNumber')) {
         } catch (Exception $exception) {
             return $exception->getMessage();
         }
-    }
-}
-
-if (!function_exists('nestedTranslate')) {
-    function nestedTranslate($value)
-    {
-        if (is_array($value)) {
-            return array_map('nestedTranslate', $value);
-        }
-        return __($value);
     }
 }
 

@@ -88,6 +88,13 @@
       0 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     ),
   ),
+  'sofa/eloquence-base' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Sofa\\Eloquence\\BaseServiceProvider',
+    ),
+  ),
   'tymon/jwt-auth' => 
   array (
     'aliases' => 

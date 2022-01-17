@@ -16,7 +16,23 @@ class CreateCountriesTable extends Migration
         Schema::connection('common_database')->create('countries', function (Blueprint $table) {
             $table->id();
             $table->enum('status', ['disable', 'active'])->default('disable');
-            $table->string('name')->unique();
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->timestamps();
+        });
+        Schema::connection('common_database')->create('provinces', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(\App\Models\Shared\Country::class);
+            $table->enum('status', ['disable', 'active'])->default('disable');
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->timestamps();
+        });
+        Schema::connection('common_database')->create('cities', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(\App\Models\Shared\Province::class);
+            $table->enum('status', ['disable', 'active'])->default('disable');
+            $table->string('name');
             $table->string('slug')->unique();
             $table->timestamps();
         });
@@ -30,5 +46,7 @@ class CreateCountriesTable extends Migration
     public function down()
     {
         Schema::connection('common_database')->dropIfExists('countries');
+        Schema::connection('common_database')->dropIfExists('provinces');
+        Schema::connection('common_database')->dropIfExists('cities');
     }
 }

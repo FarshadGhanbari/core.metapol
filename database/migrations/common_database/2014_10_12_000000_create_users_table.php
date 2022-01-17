@@ -15,7 +15,7 @@ class CreateUsersTable extends Migration
     {
         Schema::connection('common_database')->create('users', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('role_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignIdFor(\App\Models\Shared\Role::class);
             $table->enum('status', ['disable', 'active'])->default('disable');
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();

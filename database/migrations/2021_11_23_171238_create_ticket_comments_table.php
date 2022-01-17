@@ -15,7 +15,7 @@ class CreateTicketCommentsTable extends Migration
     {
         Schema::create('ticket_comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignIdFor(\App\Models\Shared\User::class);
             $table->text('content');
             $table->timestamps();
         });

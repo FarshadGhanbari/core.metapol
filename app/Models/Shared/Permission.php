@@ -13,10 +13,6 @@ class Permission extends Model
         'name',
     ];
 
-    public $searchable = [
-        'name',
-    ];
-
     public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(User::class);

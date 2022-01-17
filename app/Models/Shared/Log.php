@@ -2,28 +2,29 @@
 
 namespace App\Models\Shared;
 
-use App\Utilis\Traits\Model\DateSwitcher;
-use App\Utilis\Traits\Model\Searchable;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Eloquence;
 
 class Log extends Model
 {
     protected $connection = 'common_database';
 
-    use DateSwitcher, Searchable;
+    use Eloquence;
+
+    protected $searchableColumns = [
+        'user.first_name',
+        'user.last_name',
+        'user_ip',
+        'action',
+        'values',
+    ];
 
     protected $fillable = [
         'user_id',
         'user_ip',
         'loggable_type',
         'loggable_id',
-        'action',
-        'values',
-    ];
-
-    public $searchable = [
-        'user_ip',
         'action',
         'values',
     ];

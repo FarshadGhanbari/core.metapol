@@ -15,9 +15,7 @@ trait Sluggable
 
     protected function generateSlug(): void
     {
-        $generateSlugFrom = $this->generateSlugFrom;
-        $slugField = $this->slugField;
-        $this->$slugField = $this->makeSlugUnique($this->$generateSlugFrom);
+        $this->slug = $this->makeSlugUnique($this->name ?? $this->title);
     }
 
     protected function makeSlugUnique(string $slug): string

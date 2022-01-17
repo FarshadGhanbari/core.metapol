@@ -2,27 +2,25 @@
 
 namespace App\Models\Shared;
 
-use App\Utilis\Traits\Model\Searchable;
 use App\Utilis\Traits\Model\Sluggable;
 use App\Utilis\Traits\Model\SubmitLogger;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Eloquence;
 
 class City extends Model
 {
     protected $connection = 'common_database';
 
-    use SubmitLogger, Sluggable;
+    use Eloquence, SubmitLogger, Sluggable;
 
-    protected $generateSlugFrom = 'name', $slugField = 'slug';
+    protected $searchableColumns = [
+        'name',
+    ];
 
     protected $fillable = [
         'province_id',
         'name',
-        'status',
-    ];
-
-    public $searchable = [
-        'name',
+        'slug',
         'status',
     ];
 

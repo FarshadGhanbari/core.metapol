@@ -26,13 +26,13 @@ class CreateRolesTable extends Migration
         });
         Schema::connection('common_database')->create('permission_role', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('role_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('permission_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignIdFor(\App\Models\Shared\Role::class);
+            $table->foreignIdFor(\App\Models\Shared\Permission::class);
         });
         Schema::connection('common_database')->create('permission_user', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('permission_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignIdFor(\App\Models\Shared\User::class);
+            $table->foreignIdFor(\App\Models\Shared\Permission::class);
         });
     }
 

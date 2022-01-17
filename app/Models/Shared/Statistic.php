@@ -2,20 +2,20 @@
 
 namespace App\Models\Shared;
 
-use App\Utilis\Traits\Model\DateSwitcher;
-use App\Utilis\Traits\Model\Searchable;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Sofa\Eloquence\Eloquence;
 
 class Statistic extends Model
 {
     protected $connection = 'common_database';
 
-    use DateSwitcher, Searchable;
+    use Eloquence;
 
-    protected $fillable = [
-        'user_id',
+    protected $searchableColumns = [
+        'user.first_name',
+        'user.last_name',
         'ip',
         'geo',
         'referer_page',
@@ -28,7 +28,8 @@ class Statistic extends Model
         'browser_version',
     ];
 
-    public $searchable = [
+    protected $fillable = [
+        'user_id',
         'ip',
         'geo',
         'referer_page',

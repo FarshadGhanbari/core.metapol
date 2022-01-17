@@ -2,23 +2,23 @@
 
 namespace App\Models\Shared;
 
-use App\Utilis\Traits\Model\Searchable;
 use App\Utilis\Traits\Model\SubmitLogger;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Eloquence;
 
 class Role extends Model
 {
     protected $connection = 'common_database';
 
-    use SubmitLogger, Searchable;
+    use Eloquence, SubmitLogger;
+
+    protected $searchableColumns = [
+        'name',
+    ];
 
     protected $fillable = [
         'name',
         'status',
-    ];
-
-    public $searchable = [
-        'name',
     ];
 
     public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
